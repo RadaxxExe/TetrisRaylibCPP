@@ -1,10 +1,20 @@
 #include <raylib.h>
 
-#include "grid.h"
-#include "block.h"
-#include "blocks.cpp"
+#include "game.h"
 
 int targetFPS = 165;
+double lastUpdateTime = 0;
+
+bool EventTriggered(double interval)
+{
+    double currentTime = GetTime();
+    if (currentTime - lastUpdateTime >= interval)
+    {
+        lastUpdateTime = currentTime;
+        return true;
+    }
+    return false;
+}
 
 int main()
 {
@@ -13,25 +23,18 @@ int main()
     InitWindow(300, 600, "Raylib Tetris");
     SetTargetFPS(targetFPS);
 
-    Grid grid = Grid();
-    grid.Print();
-
-    // JBlock block = JBlock();
-    // LBlock block = LBlock();
-    // SBlock block = SBlock();
-    // TBlock block = TBlock();
-    // IBlock block = IBlock();
-    // OBlock block = OBlock();
-    // ZBlock block = ZBlock();
+    Game game = Game();
 
     while (!WindowShouldClose())
     {
+        game.HandleInput();
+        if (EventTriggered(0.2))
+        {
+            game.MoveBlockDown();
+        }
         BeginDrawing();
         ClearBackground(darkBlue);
-
-        grid.Draw();
-        block.Draw();
-
+        game.Draw();
         EndDrawing();
     }
 
